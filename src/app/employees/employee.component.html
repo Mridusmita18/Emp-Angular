@@ -28,11 +28,19 @@
       </label>
       </div>     
     </div>
+    <div formGroupName="emailGroup">
     <div class="form-group" [ngClass]="{'has-error':formErrors.email}">
       <label for="email">Email</label>
       <input type="text" id="email" name="email" class="form-control" formControlName="email"  (blur)="logkeyvaluepairs()">
       <span class="help-block" *ngIf="formErrors.email">{{formErrors.email}}</span>  
     </div>
+    <div class="form-group" [ngClass]="{'has-error':formErrors.ConfirmEmail || formErrors.emailGroup }">
+      <label for="ConfirmEmail">Confirm Email</label>
+      <input type="text" id="ConfirmEmail" name="ConfirmEmail" class="form-control" formControlName="ConfirmEmail"  (blur)="logkeyvaluepairs()">
+      <span class="help-block" *ngIf="formErrors.ConfirmEmail || formErrors.emailGroup ">
+        {{formErrors.ConfirmEmail? formErrors.ConfirmEmail: formErrors.emailGroup }}</span>  
+    </div>
+  </div>
     <!-- <div class="form-group">
       <label for="date">Date of Birth</label>
       <input type="text" id="date" name="date" class="form-control" bsDatepicker>

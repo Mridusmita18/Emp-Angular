@@ -10,4 +10,12 @@ return (control: AbstractControl): { [key: string]: any } | null => {
   else return {'emailDomain': true}
 }
 }
+
+static matchEmail(emailGroup : AbstractControl): {[key:string]: any} | null
+{
+const email=emailGroup.get('email');
+const confirmEmail=emailGroup.get('ConfirmEmail');
+if(email===confirmEmail || confirmEmail.pristine) return null;
+else return {'matchEmail': true}
+}
 }

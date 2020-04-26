@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { NgForm, FormGroup, FormControl, FormBuilder, Validator, Validators, AbstractControl } from '@angular/forms';
 import { Department } from '../model/department';
 import { Employee } from '../model/employee';
-import { group } from '@angular/animations';
-import { patchComponentDefWithScope } from '@angular/core/src/render3/jit/module';
 import { CustomValidator } from 'src/shared/customvalidator';
 
 @Component({
@@ -20,7 +18,10 @@ export class EmployeeComponent implements OnInit {
     },
     'email': {
       'required': 'Email is required.',
-      'emailDomain': 'Email domain should be gmail.com'
+      'emailDomain': 'Email domain should be dell.com'
+    },
+    'ConfirmEmail': {
+      'required': 'Email is required.',
     },
     'phone': {
       'required': 'Phone is required.'
@@ -31,6 +32,10 @@ export class EmployeeComponent implements OnInit {
     'experienceInYears': {
       'required': 'Experience is required.',
     },
+    'emailGroup':{
+      'matchEmail':'Email and Confirm Email do not match',
+
+    },
     'proficiency': {
       'required': 'Proficiency is required.',
     },
@@ -38,10 +43,12 @@ export class EmployeeComponent implements OnInit {
   formErrors = {
     'fullName': '',
     'email': '',
+    'ConfirmEmail': '',
     'phone': '',
     'skillName': '',
     'experienceInYears': '',
-    'proficiency': ''
+    'proficiency': '',
+    'emailGroup': ''
   };
   employeeForm: FormGroup;
   employee: Employee = {
@@ -62,26 +69,13 @@ export class EmployeeComponent implements OnInit {
     { id: 3, name: 'HR' },
   ];
   ngOnInit() {
-
-    //     this.employeeForm = new FormGroup(
-    //       {
-    //         Id: new FormControl(),
-    // fullName: new FormControl(),
-    // LastName: new FormControl(),
-    // skills: new FormGroup(
-    //   {
-    //     skillName: new FormControl(),
-    //     ExperienceInYears: new FormControl(),
-    //     Proficiency:  new FormControl()
-    //   }
-    // )
-    //       }
-    //     );
-
     this.employeeForm = this.fb.group({
       fullName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(10)]],
       ContactPreference: ['email'],
-      email: ['',[ Validators.required,CustomValidator.emailDomain('dell.com')]],
+      emailGroup : this.fb.group({
+        email: ['',[ Validators.required,CustomValidator.emailDomain('dell.com')]],
+        ConfirmEmail: ['', Validators.required],
+      },{validator: CustomValidator.matchEmail}),
       phone: ['', Validators.required],
       skills: this.fb.group(
         {
@@ -109,31 +103,22 @@ export class EmployeeComponent implements OnInit {
   logkeyvaluepairs(group: FormGroup = this.employeeForm): void {
     Object.keys(group.controls).forEach(key => {
       const control = group.get(key);
-      if (control instanceof FormGroup) {
-        this.logkeyvaluepairs(control);
-      } else {
-        this.formErrors[key] = '';
-        if (control && !control.valid && (control.touched || control.dirty)) {
-          const msg = this.validationMessages[key];
-          for (const errorKey in control.errors) {
-            if (errorKey) {
-              this.formErrors[key] += msg[errorKey];
-            }
+      this.formErrors[key] = '';
+      if (control && !control.valid && (control.touched || control.dirty)) {
+        const msg = this.validationMessages[key];
+        for (const errorKey in control.errors) {
+          if (errorKey) {
+            this.formErrors[key] += msg[errorKey];
           }
         }
       }
+      if (control instanceof FormGroup) {
+        this.logkeyvaluepairs(control);
+      } 
     });
   }
   LoadData(): void {
     this.logkeyvaluepairs(this.employeeForm);
-    // this.employeeForm.patchValue(
-    //   {
-    //     fullName: 'John'
-
-
-    //   }
-    // );
-
   }
   onContactPreferenceChange(selectedvalue: string): void {
     const control = this.employeeForm.get('phone');
