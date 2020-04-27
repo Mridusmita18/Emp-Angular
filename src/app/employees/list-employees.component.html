@@ -1,3 +1,21 @@
-<p>
-  list-employees works!
-</p>
+<form [formGroup]="EmailForm">
+<div class="container">
+<div class="panel panel-primary">
+  <div class="panel-heading">
+  </div>
+  <div class="panel-body">
+    <div class="form-group" [ngClass]="{'has-error':formErrors.email}">
+      <label>Email</label>
+      <input type="text" class="form-control" formControlName="email" (blur)="logValidationErrors()">
+      <span class="help-block" *ngIf="formErrors.email">{{formErrors.email}}</span>
+    </div>
+    <div class="form-group">
+      <label>Confirm Email</label>
+      <input type="text" class="form-control" formControlName="confirmemail">
+    </div>
+  </div>
+  <div class="panel-footer">   
+  </div>
+</div>
+</div>
+</form>
